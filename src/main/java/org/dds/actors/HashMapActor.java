@@ -111,7 +111,7 @@ public class HashMapActor extends AbstractActor {
     private void clear(ClearMessage message) {
         this.fakeDB.clear();
         LOG.info(
-                "Cleared the FakeDB successfully (Remove Operation), {}", getSender()
+                "Cleared the FakeDB successfully (Clear Operation), {}", getSender()
         );
     }
 
