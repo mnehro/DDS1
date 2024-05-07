@@ -12,7 +12,7 @@ import java.util.Map;
 public class HashMapActor extends AbstractActor {
     private final LoggingAdapter LOG = Logging.getLogger(getContext().getSystem(), this);
 
-    public final Map<Integer, Double> fakeDB = new HashMap<>();
+    private final Map<Integer, Double> fakeDB = new HashMap<>();
 
     public static Props props() {
         return Props.create(HashMapActor.class);
