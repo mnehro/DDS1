@@ -50,31 +50,11 @@ public class HashMapActor extends AbstractActor {
     }
 
     private void putALL(PutAllMessage message) {
-        Map<Integer, Double> newEntries = new HashMap<>();
+        message.newData().forEach(this.fakeDB::putIfAbsent);
 
-        for (Map.Entry<Integer, Double> entry : message.values().entrySet()) {
-            Integer key = entry.getKey();
-            Double value = entry.getValue();
-            if (!keyExists(key)) {
-                newEntries.put(key, value);
-            } else {
-                LOG.info(
-                        "Key {} Already exists (Put ALl Operation), {}",
-                        key, getSender()
-                );
-            }
-        }
-        if (newEntries.isEmpty()) {
-            LOG.info(
-                    "All keys {} Already exist in the DB (Put ALl Operation), {}",
-                    message.values().keySet(), getSender()
-            );
-            return;
-        }
-        this.fakeDB.putAll(newEntries);
         LOG.info(
                 "Added values with keys {} and values {} successfully (Put ALl Operation), {}",
-                newEntries.keySet(), newEntries.values(), getSender()
+                message.newData().keySet(), message.newData().values(), getSender()
         );
     }
 
