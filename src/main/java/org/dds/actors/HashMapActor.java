@@ -12,7 +12,7 @@ import java.util.Map;
 public class HashMapActor extends AbstractActor {
     private final LoggingAdapter LOG = Logging.getLogger(getContext().getSystem(), this);
 
-    private final Map<Integer, Double> fakeDB = new HashMap<>();
+    private static final Map<Integer, Double> fakeDB = new HashMap<>();
 
     public static Props props() {
         return Props.create(HashMapActor.class);
@@ -32,7 +32,7 @@ public class HashMapActor extends AbstractActor {
     }
 
     private boolean keyExists(Integer key) {
-        return this.fakeDB.containsKey(key);
+        return fakeDB.containsKey(key);
     }
     private void add(AddMessage message) {
         if (this.keyExists(message.key())) {
@@ -42,7 +42,7 @@ public class HashMapActor extends AbstractActor {
             );
             return;
         }
-        this.fakeDB.put(message.key(), message.value());
+        fakeDB.put(message.key(), message.value());
         LOG.info(
                 "Added value with key {} and value {} successfully (Add Operation), {}",
                 message.key(), message.value(), getSender()
@@ -50,7 +50,7 @@ public class HashMapActor extends AbstractActor {
     }
 
     private void putALL(PutAllMessage message) {
-        message.newData().forEach(this.fakeDB::putIfAbsent);
+        message.newData().forEach(fakeDB::putIfAbsent);
 
         LOG.info(
                 "Added values with keys {} and values {} successfully (Put ALl Operation), {}",
@@ -60,7 +60,7 @@ public class HashMapActor extends AbstractActor {
 
     private void replace(ReplaceMessage message) {
         if (this.keyExists(message.key())) {
-            this.fakeDB.replace(message.key(), message.newValue());
+            fakeDB.replace(message.key(), message.newValue());
             LOG.info(
                     "Replaced value with key {} with new value {} successfully (Replace Operation), {}",
                     message.key(), message.newValue(), getSender()
@@ -75,7 +75,7 @@ public class HashMapActor extends AbstractActor {
 
     private void remove(RemoveMessage message) {
         if (this.keyExists(message.key())) {
-            this.fakeDB.remove(message.key());
+            fakeDB.remove(message.key());
             LOG.info(
                     "Removed value with key {} successfully (Remove Operation), {}",
                     message.key(), getSender()
@@ -89,7 +89,7 @@ public class HashMapActor extends AbstractActor {
     }
 
     private void clear(ClearMessage message) {
-        this.fakeDB.clear();
+        fakeDB.clear();
         LOG.info(
                 "Cleared the FakeDB successfully (Clear Operation), {}", getSender()
         );
@@ -99,8 +99,8 @@ public class HashMapActor extends AbstractActor {
         LOG.info(
                 "(List Operation), {}", getSender()
         );
-        if (!this.fakeDB.isEmpty()) {
-            this.fakeDB.forEach((key, value) -> LOG.info(
+        if (!fakeDB.isEmpty()) {
+            fakeDB.forEach((key, value) -> LOG.info(
                     "Key {} | Value {} ", key, value
             ));
         } else {
