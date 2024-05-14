@@ -37,15 +37,15 @@ public class HashMapActor extends AbstractActor {
     private void add(AddMessage message) {
         if (this.keyExists(message.key())) {
             LOG.info(
-                    "Key {} already exists in the DB (Add Operation), {}",
-                    message.key(), getSender()
+                    "Key {} already exists in the DB (Add Operation), from {}, on actor {}",
+                    message.key(), getSender(), self().path()
             );
             return;
         }
         fakeDB.put(message.key(), message.value());
         LOG.info(
-                "Added value with key {} and value {} successfully (Add Operation), {}",
-                message.key(), message.value(), getSender()
+                "Added value with key {} and value {} successfully (Add Operation), from {}, on actor {}",
+                message.key(), message.value(), getSender(), self().path()
         );
     }
 
@@ -53,8 +53,8 @@ public class HashMapActor extends AbstractActor {
         message.newData().forEach(fakeDB::putIfAbsent);
 
         LOG.info(
-                "Added values with keys {} and values {} successfully (Put ALl Operation), {}",
-                message.newData().keySet(), message.newData().values(), getSender()
+                "Added values with keys {} and values {} successfully (Put ALl Operation), from {}, on actor {}",
+                message.newData().keySet(), message.newData().values(), getSender(),self().path()
         );
     }
 
@@ -62,14 +62,14 @@ public class HashMapActor extends AbstractActor {
         if (this.keyExists(message.key())) {
             fakeDB.replace(message.key(), message.newValue());
             LOG.info(
-                    "Replaced value with key {} with new value {} successfully (Replace Operation), {}",
-                    message.key(), message.newValue(), getSender()
+                    "Replaced value with key {} with new value {} successfully (Replace Operation), from {}, on actor {}",
+                    message.key(), message.newValue(), getSender(), self().path()
             );
             return;
         }
         LOG.info(
-                "Key {} Does not exist (Replace Operation), {}",
-                message.key(), getSender()
+                "Key {} Does not exist (Replace Operation), from {}, on actor {}",
+                message.key(), getSender(), self().path()
         );
     }
 
@@ -77,27 +77,27 @@ public class HashMapActor extends AbstractActor {
         if (this.keyExists(message.key())) {
             fakeDB.remove(message.key());
             LOG.info(
-                    "Removed value with key {} successfully (Remove Operation), {}",
-                    message.key(), getSender()
+                    "Removed value with key {} successfully (Remove Operation), from {}, on actor {}",
+                    message.key(), getSender(), self().path()
             );
             return;
         }
         LOG.info(
-                "Key {} Does not exist (Remove Operation), {}",
-                message.key(), getSender()
+                "Key {} Does not exist (Remove Operation), from {}, on actor {}",
+                message.key(), getSender(),  self().path()
         );
     }
 
     private void clear(ClearMessage message) {
         fakeDB.clear();
         LOG.info(
-                "Cleared the FakeDB successfully (Clear Operation), {}", getSender()
+                "Cleared the FakeDB successfully (Clear Operation),from {}, on actor {}", getSender() , self().path()
         );
     }
 
     private void list(ListMessage message) {
         LOG.info(
-                "(List Operation), {}", getSender()
+                "(List Operation), from {}, on actor {}", getSender() , self().path()
         );
         if (!fakeDB.isEmpty()) {
             fakeDB.forEach((key, value) -> LOG.info(
